@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-  res.json({ message: "Hello World!", version: "v1" });
+    res.send("Novintix App running successfully!");
 });
 
-app.get("/healthz", (req, res) => res.send("ok"));
-app.get("/readyz", (req, res) => res.send("ready"));
-
-app.listen(PORT, () => console.log(`App running on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+});
