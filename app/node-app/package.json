@@ -1,12 +1,15 @@
 {
-  "name": "node-app",
+  "name": "novintix-app",
   "version": "1.0.0",
+  "description": "Simple Node.js Express App for CI/CD Pipeline",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "echo \"Running basic check\""
+    "test": "echo \"No tests configured\""
   },
   "dependencies": {
-    "express": "^4.19.0"
+    "express": "4.18.2",
+    "cross-spawn": "7.0.5",
+    "glob": "10.5.0"
   }
 }
