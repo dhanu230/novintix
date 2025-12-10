@@ -1,0 +1,81 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = "us-east-1"
+        SECRET_ARN = "arn:aws:secretsmanager:us-east-1:037776138029:secret:mygithub/token-4e5OTy"
+        ECR_URL    = "037776138029.dkr.ecr.us-east-1.amazonaws.com/docker/dimages"
+        IMAGE_TAG  = "v${BUILD_NUMBER}"
+    }
+
+    stages {
+
+        stage('Get GitHub Token') {
+            steps {
+                script {
+                    GITHUB_TOKEN = sh(
+                        script: """
+                            aws secretsmanager get-secret-value \
+                                --secret-id ${SECRET_ARN} \
+                                --query SecretString \
+                                --output text
+                        """,
+                        returnStdout: true
+                    ).trim()
+                }
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                git credentialsId: null,
+                    url: "https://${GITHUB_TOKEN}@github.com/dhanu230/novintix.git",
+                    branch: "main"
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('app/node-app') {
+                    sh "npm ci"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('app/node-app') {
+                    sh "npm test"
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh """
+                docker build -t ${ECR_URL}:${IMAGE_TAG} \
+                             -t ${ECR_URL}:latest \
+                             -f docker/Dockerfile .
+                """
+            }
+        }
+
+        stage('Security Scan (Trivy)') {
+            steps {
+                sh "trivy image --exit-code 1 --severity HIGH,CRITICAL ${ECR_URL}:${IMAGE_TAG}"
+            }
+        }
+
+        stage('Push to ECR') {
+            steps {
+                sh """
+                aws ecr get-login-password --region us-east-1 \
+                    | docker login --username AWS --password-stdin ${ECR_URL}
+
+                docker push ${ECR_URL}:${IMAGE_TAG}
+                docker push ${ECR_URL}:latest
+                """
+            }
+        }
+    }
+}
