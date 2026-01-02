@@ -1,0 +1,15 @@
+repositories:
+  - name: eks
+    url: https://aws.github.io/eks-charts
+
+releases:
+  - name: aws-load-balancer-controller
+    namespace: kube-system
+    chart: eks/aws-load-balancer-controller
+    installed: true
+    values:
+      - clusterName: demo-eks
+        region: us-east-1
+        serviceAccount:
+          create: false
+          name: aws-load-balancer-controller
