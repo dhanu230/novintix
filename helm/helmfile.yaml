@@ -1,3 +1,6 @@
+helmDefaults:
+  skipDiff: true
+
 repositories:
   - name: eks
     url: https://aws.github.io/eks-charts
