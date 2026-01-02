@@ -1,5 +1,5 @@
 helmDefaults:
-  skipDiff: true
+  diff: false
 
 repositories:
   - name: eks
