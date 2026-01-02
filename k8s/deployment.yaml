@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: novintix
-          image: 037776138029.dkr.ecr.us-east-1.amazonaws.com/docker/dimages:latest
+          image: 930199791418.dkr.ecr.us-east-1.amazonaws.com/docker/dimages:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
