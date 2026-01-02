@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: LB-service
+  name: lb-service
 spec:
   type: LoadBalancer
   selector:
